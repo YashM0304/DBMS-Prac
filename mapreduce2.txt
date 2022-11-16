@@ -1,0 +1,65 @@
+> mongo
+2022-11-10T11:24:45.276+0530 ReferenceError: mongo is not defined
+> db.Bank.insert({cust_id:"C123",Name:"Sachin",Balance:1200,status:"Active"});
+WriteResult({ "nInserted" : 1 })
+> db.Bank.insert({cust_id:"C123",Name:"Sachin",Balance:1500,status:"Active"});
+WriteResult({ "nInserted" : 1 })
+> db.Bank.insert({cust_id:"C222",Name:"Rahul",Balance:500,status:"Active"});
+WriteResult({ "nInserted" : 1 })
+> db.Bank.insert({cust_id:"C123",Name:"Sachin",Balance:100,status:"Deactive"});
+WriteResult({ "nInserted" : 1 })
+> db.Bank.insert({cust_id:"C222",Name:"Rahul",Balance:2000,status:"Active"});
+WriteResult({ "nInserted" : 1 })
+> db.Bank.find().pretty();
+{
+    "_id" : ObjectId("636c92e77ae50411eb23c2ae"),
+    "cust_id" : "C123",
+    "Name" : "Sachin",
+    "Balance" : 1200,
+    "status" : "Active"
+}
+{
+    "_id" : ObjectId("636c92f57ae50411eb23c2af"),
+    "cust_id" : "C123",
+    "Name" : "Sachin",
+    "Balance" : 1500,
+    "status" : "Active"
+}
+{
+    "_id" : ObjectId("636c930b7ae50411eb23c2b0"),
+    "cust_id" : "C222",
+    "Name" : "Rahul",
+    "Balance" : 500,
+    "status" : "Active"
+}
+{
+    "_id" : ObjectId("636c931d7ae50411eb23c2b1"),
+    "cust_id" : "C123",
+    "Name" : "Sachin",
+    "Balance" : 100,
+    "status" : "Deactive"
+}
+{
+    "_id" : ObjectId("636c932e7ae50411eb23c2b2"),
+    "cust_id" : "C222",
+    "Name" : "Rahul",
+    "Balance" : 2000,
+    "status" : "Active"
+}
+> db.Bank.mapReduce(function(){emit(this.cust_id,this.Balance);},
+... function(key,values){return Array.sum(values)}, {query:{status:"Active"},out:"Bank_totals"});
+{
+    "result" : "Bank_totals",
+    "timeMillis" : 304,
+    "counts" : {
+        "input" : 4,
+        "emit" : 4,
+        "reduce" : 2,
+        "output" : 2
+    },
+    "ok" : 1
+}
+> db.Bank_totals.find().pretty();
+{ "_id" : "C123", "value" : 2700 }
+{ "_id" : "C222", "value" : 2500 }
+>
