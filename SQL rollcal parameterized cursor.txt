@@ -1,0 +1,82 @@
+mysql> create database Ass07;
+Query OK, 1 row affected (0.04 sec)
+
+mysql> use Ass07;
+Database changed
+mysql> create table O_RollCall(rollno int, name varchar(20));
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> create table N_RollCall(rollno int, name varchar(20));
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> insert into O_RollCall values(1,'Atharva'),(2,'Yash'),(3,'Mandar'),(4,'Sid');
+Query OK, 4 rows affected (0.01 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> insert into N_RollCall values(2,'Atharva'),(3,'Yash'),(5,'Ask'),(6,'Esha');
+Query OK, 4 rows affected (0.01 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> select * from O_RollCall
+    -> ^C
+mysql> select * from O_RollCall;
++--------+---------+
+| rollno | name    |
++--------+---------+
+|      1 | Atharva |
+|      2 | Yash    |
+|      3 | Mandar  |
+|      4 | Sid     |
++--------+---------+
+4 rows in set (0.00 sec)
+
+mysql> select * from N_RollCall;
++--------+---------+
+| rollno | name    |
++--------+---------+
+|      2 | Atharva |
+|      3 | Yash    |
+|      5 | Ask     |
+|      6 | Esha    |
++--------+---------+
+4 rows in set (0.00 sec)
+
+mysql> drop procedure if exists mycursor;
+Query OK, 0 rows affected, 1 warning (0.01 sec)
+
+mysql> delimiter //
+mysql> create procedure mycursor()
+    -> begin
+    -> declare done int default 0;
+    -> declare c_rno int;
+    -> declare c_name varchar(20);
+    -> declare c_student cursor for select rollno, name from O_RollCall where rollno not in (select rollno from N_RollCall);
+    -> declare continue handler for not found set done = 1;
+    -> open c_student;
+    ->  read_loop: LOOP
+    -> fetch c_student into c_rno, c_name;
+    -> if(done=1) then leave read_loop;
+    -> end if;
+    -> insert into N_RollCall(rollno, name) value(c_rno, c_name);
+    -> end LOOP;
+    ->  close c_student;
+    -> end;
+    ->  //
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> delimiter ;
+mysql> call mycursor();
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> select * from N_RollCall;
++--------+---------+
+| rollno | name    |
++--------+---------+
+|      2 | Atharva |
+|      3 | Yash    |
+|      5 | Ask     |
+|      6 | Esha    |
+|      1 | Atharva |
+|      4 | Sid     |
++--------+---------+
+6 rows in set (0.00 sec)

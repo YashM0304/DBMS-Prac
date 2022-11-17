@@ -1,0 +1,227 @@
+mysql> create database Ass03;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> use Ass03;
+Database changed
+mysql> create table studentMark(rollno int primary key, name varchar(20), marks int, branch varchar(20
+    -> ^C
+mysql> create table studentMark(rollno int primary key, name varchar(20), marks int, branch varchar(20));
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> insert into studentMark value(1, 'Ravi', 90, 'Computer');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into studentMark values(2, 'Vedika', 70, 'Computer'),(3, 'Arush', 95, 'IT'),(4, 'Jyoti', 60, 'IT');
+Query OK, 3 rows affected (0.01 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> select * from studentMark;
++--------+--------+-------+----------+
+| rollno | name   | marks | branch   |
++--------+--------+-------+----------+
+|      1 | Ravi   |    90 | Computer |
+|      2 | Vedika |    70 | Computer |
+|      3 | Arush  |    95 | IT       |
+|      4 | Jyoti  |    60 | IT       |
++--------+--------+-------+----------+
+4 rows in set (0.00 sec)
+
+mysql> select * from studentMark where marks>70;
++--------+-------+-------+----------+
+| rollno | name  | marks | branch   |
++--------+-------+-------+----------+
+|      1 | Ravi  |    90 | Computer |
+|      3 | Arush |    95 | IT       |
++--------+-------+-------+----------+
+2 rows in set (0.00 sec)
+
+mysql> select * from studentMark where marks<70;
++--------+-------+-------+--------+
+| rollno | name  | marks | branch |
++--------+-------+-------+--------+
+|      4 | Jyoti |    60 | IT     |
++--------+-------+-------+--------+
+1 row in set (0.00 sec)
+
+mysql> select * from studentMark where marks>=70;
++--------+--------+-------+----------+
+| rollno | name   | marks | branch   |
++--------+--------+-------+----------+
+|      1 | Ravi   |    90 | Computer |
+|      2 | Vedika |    70 | Computer |
+|      3 | Arush  |    95 | IT       |
++--------+--------+-------+----------+
+3 rows in set (0.00 sec)
+
+mysql> select * from studentMark where marks=70 and name='Vedika';
++--------+--------+-------+----------+
+| rollno | name   | marks | branch   |
++--------+--------+-------+----------+
+|      2 | Vedika |    70 | Computer |
++--------+--------+-------+----------+
+1 row in set (0.00 sec)
+
+mysql> update studentMark set name='Sachin' where name='Ravi';
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from studentMark;
++--------+--------+-------+----------+
+| rollno | name   | marks | branch   |
++--------+--------+-------+----------+
+|      1 | Sachin |    90 | Computer |
+|      2 | Vedika |    70 | Computer |
+|      3 | Arush  |    95 | IT       |
+|      4 | Jyoti  |    60 | IT       |
++--------+--------+-------+----------+
+4 rows in set (0.00 sec)
+
+mysql> delete from studentMark where name='Arush';
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from studentMark;
++--------+--------+-------+----------+
+| rollno | name   | marks | branch   |
++--------+--------+-------+----------+
+|      1 | Sachin |    90 | Computer |
+|      2 | Vedika |    70 | Computer |
+|      4 | Jyoti  |    60 | IT       |
++--------+--------+-------+----------+
+3 rows in set (0.00 sec)
+
+mysql> insert into studentMark(3, 'Arush',95,'IT');
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '3, 'Arush',95,'IT')' at line 1
+mysql> insert into studentMark value(3, 'Arush',95,'IT');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from studentMark;
++--------+--------+-------+----------+
+| rollno | name   | marks | branch   |
++--------+--------+-------+----------+
+|      1 | Sachin |    90 | Computer |
+|      2 | Vedika |    70 | Computer |
+|      3 | Arush  |    95 | IT       |
+|      4 | Jyoti  |    60 | IT       |
++--------+--------+-------+----------+
+4 rows in set (0.00 sec)
+
+mysql> select min(marks) from studentMark;
++------------+
+| min(marks) |
++------------+
+|         60 |
++------------+
+1 row in set (0.00 sec)
+
+mysql> select min(marks) from studentMark where branch='IT';
++------------+
+| min(marks) |
++------------+
+|         60 |
++------------+
+1 row in set (0.00 sec)
+
+mysql> select min(marks) from studentMark where branch='Computer';
++------------+
+| min(marks) |
++------------+
+|         70 |
++------------+
+1 row in set (0.00 sec)
+
+mysql> select max(marks) from studentMark;
++------------+
+| max(marks) |
++------------+
+|         95 |
++------------+
+1 row in set (0.00 sec)
+
+mysql> select max(marks) from studentMark where branch='Computer';
++------------+
+| max(marks) |
++------------+
+|         90 |
++------------+
+1 row in set (0.00 sec)
+
+mysql> select avg(marks) from studentMark;
++------------+
+| avg(marks) |
++------------+
+|    78.7500 |
++------------+
+1 row in set (0.00 sec)
+
+mysql> select avg(marks) from studentMark where branch='IT';
++------------+
+| avg(marks) |
++------------+
+|    77.5000 |
++------------+
+1 row in set (0.00 sec)
+
+mysql> select avg(marks) from studentMark where branch='Computer';
++------------+
+| avg(marks) |
++------------+
+|    80.0000 |
++------------+
+1 row in set (0.00 sec)
+
+mysql>
+mysql> select sum(marks) from studentMark;
++------------+
+| sum(marks) |
++------------+
+|        315 |
++------------+
+1 row in set (0.00 sec)
+
+mysql> select avg(marks) from studentMark where branch='Computer';
++------------+
+| avg(marks) |
++------------+
+|    80.0000 |
++------------+
+1 row in set (0.00 sec)
+
+mysql> select sum(marks) from studentMark where branch='Computer';
++------------+
+| sum(marks) |
++------------+
+|        160 |
++------------+
+1 row in set (0.00 sec)
+
+mysql> select sum(marks) from studentMark where branch='IT';
++------------+
+| sum(marks) |
++------------+
+|        155 |
++------------+
+1 row in set (0.00 sec)
+
+mysql> select count(marks) from studentMark;
++--------------+
+| count(marks) |
++--------------+
+|            4 |
++--------------+
+1 row in set (0.00 sec)
+
+mysql> select count(marks) from studentMark where branch='IT';
++--------------+
+| count(marks) |
++--------------+
+|            2 |
++--------------+
+1 row in set (0.00 sec)
+
+mysql> select count(marks) from studentMark where branch='Computer';
++--------------+
+| count(marks) |
++--------------+
+|            2 |
++--------------+
+1 row in set (0.00 sec)

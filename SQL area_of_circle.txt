@@ -1,0 +1,61 @@
+mysql> create database Ass5;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> use Ass5;
+Database changed
+mysql> create table areaTbl(radius int primary key, area float);
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> desc areaTbl;
++--------+-------+------+-----+---------+-------+
+| Field  | Type  | Null | Key | Default | Extra |
++--------+-------+------+-----+---------+-------+
+| radius | int   | NO   | PRI | NULL    |       |
+| area   | float | YES  |     | NULL    |       |
++--------+-------+------+-----+---------+-------+
+2 rows in set (0.00 sec)
+
+mysql> drop procedure if exists calcArea;
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+
+mysql> delimiter //
+mysql> create procedure calcArea()
+    -> begin
+    -> declare r int;
+    -> declare a float;
+    ->
+    -> set r=5;
+    -> loop_label:LOOP
+    -> if(r>9) then leave loop_label;
+    -> end if;
+    -> set a=3.14*r*r;
+    -> insert into areaTbl(radius, area) value(r, a);
+    -> set r=r+1;
+    -> end loop;
+    -> end;
+    -> //
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> delimiter ;
+mysql> call calcArea();
+Query OK, 1 row affected (0.01 sec)
+
+mysql> show tables;
++----------------+
+| Tables_in_ass5 |
++----------------+
+| areatbl        |
++----------------+
+1 row in set (0.00 sec)
+
+mysql> select * from areaTbl;
++--------+--------+
+| radius | area   |
++--------+--------+
+|      5 |   78.5 |
+|      6 | 113.04 |
+|      7 | 153.86 |
+|      8 | 200.96 |
+|      9 | 254.34 |
++--------+--------+
+5 rows in set (0.00 sec)

@@ -1,0 +1,227 @@
+test> db.createCollection("MongoAss1");
+
+test> db.MongoAss1.insert({rollno:1, name:"abc", class:"FE"});
+
+
+test> db.MongoAss1.insertMany([{rollno:2, name:"xyz", class:"SE"},{rollno:3, name:"pqr", class:"TE"},{rollno:4, name:"jkl", class:"BE"}]);
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': ObjectId("637545374b6c7793efd81c07"),
+    '1': ObjectId("637545374b6c7793efd81c08"),
+    '2': ObjectId("637545374b6c7793efd81c09")
+  }
+}
+test> db.MongoAss1.find().pretty();
+[
+  {
+    _id: ObjectId("637544a44b6c7793efd81c06"),
+    rollno: 1,
+    name: 'abc',
+    class: 'FE'
+  },
+  {
+    _id: ObjectId("637545374b6c7793efd81c07"),
+    rollno: 2,
+    name: 'xyz',
+    class: 'SE'
+  },
+  {
+    _id: ObjectId("637545374b6c7793efd81c08"),
+    rollno: 3,
+    name: 'pqr',
+    class: 'TE'
+  },
+  {
+    _id: ObjectId("637545374b6c7793efd81c09"),
+    rollno: 4,
+    name: 'jkl',
+    class: 'BE'
+  }
+]
+test> db.MongoAss1.update({rollno:4},{$set:{rollno:4,name:"qwe",class:"lastYR"}});
+
+
+test> db.MongoAss1.updateOne({rollno:4},{$set:{rollno:4,name:"qwe",class:"lastYR"}});
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+test> db.MongoAss1.find().pretty();
+[
+  {
+    _id: ObjectId("637544a44b6c7793efd81c06"),
+    rollno: 1,
+    name: 'abc',
+    class: 'FE'
+  },
+  {
+    _id: ObjectId("637545374b6c7793efd81c07"),
+    rollno: 2,
+    name: 'xyz',
+    class: 'SE'
+  },
+  {
+    _id: ObjectId("637545374b6c7793efd81c08"),
+    rollno: 3,
+    name: 'pqr',
+    class: 'TE'
+  },
+  {
+    _id: ObjectId("637545374b6c7793efd81c09"),
+    rollno: 4,
+    name: 'qwe',
+    class: 'lastYR'
+  }
+]
+test> db.MongoAss1.updateOne({rollno:4},{$set:{name:"qwe",class:"lastYR"}});
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 0,
+  upsertedCount: 0
+}
+test> db.MongoAss1.find().pretty();
+[
+  {
+    _id: ObjectId("637544a44b6c7793efd81c06"),
+    rollno: 1,
+    name: 'abc',
+    class: 'FE'
+  },
+  {
+    _id: ObjectId("637545374b6c7793efd81c07"),
+    rollno: 2,
+    name: 'xyz',
+    class: 'SE'
+  },
+  {
+    _id: ObjectId("637545374b6c7793efd81c08"),
+    rollno: 3,
+    name: 'pqr',
+    class: 'TE'
+  },
+  {
+    _id: ObjectId("637545374b6c7793efd81c09"),
+    rollno: 4,
+    name: 'qwe',
+    class: 'lastYR'
+  }
+]
+test> db.MongoAss1.updateOne({rollno:4},{$set:{name:"qwemnb",class:"lastYR"}});
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+test> db.MongoAss1.find().pretty();
+[
+  {
+    _id: ObjectId("637544a44b6c7793efd81c06"),
+    rollno: 1,
+    name: 'abc',
+    class: 'FE'
+  },
+  {
+    _id: ObjectId("637545374b6c7793efd81c07"),
+    rollno: 2,
+    name: 'xyz',
+    class: 'SE'
+  },
+  {
+    _id: ObjectId("637545374b6c7793efd81c08"),
+    rollno: 3,
+    name: 'pqr',
+    class: 'TE'
+  },
+  {
+    _id: ObjectId("637545374b6c7793efd81c09"),
+    rollno: 4,
+    name: 'qwemnb',
+    class: 'lastYR'
+  }
+]
+test> db.MongoAss1.remove({rollno:4});
+DeprecationWarning: Collection.remove() is deprecated. Use deleteOne, deleteMany, findOneAndDelete, or bulkWrite.
+{ acknowledged: true, deletedCount: 1 }
+test> db.MongoAss1.deleteOne({rollno:4});
+{ acknowledged: true, deletedCount: 0 }
+test> db.MongoAss1.find().pretty();
+[
+  {
+    _id: ObjectId("637544a44b6c7793efd81c06"),
+    rollno: 1,
+    name: 'abc',
+    class: 'FE'
+  },
+  {
+    _id: ObjectId("637545374b6c7793efd81c07"),
+    rollno: 2,
+    name: 'xyz',
+    class: 'SE'
+  },
+  {
+    _id: ObjectId("637545374b6c7793efd81c08"),
+    rollno: 3,
+    name: 'pqr',
+    class: 'TE'
+  }
+]
+test> db.MongoAss1.find({$or:[{rollno:2},{name:"abc"}]).pretty();
+Uncaught:
+SyntaxError: Unexpected token, expected "," (1:48)
+
+> 1 | db.MongoAss1.find({$or:[{rollno:2},{name:"abc"}]).pretty();
+    |                                                 ^
+  2 |
+
+test> db.MongoAss1.find({$or:[{rollno:2},{name:"abc"}]}).pretty();
+[
+  {
+    _id: ObjectId("637544a44b6c7793efd81c06"),
+    rollno: 1,
+    name: 'abc',
+    class: 'FE'
+  },
+  {
+    _id: ObjectId("637545374b6c7793efd81c07"),
+    rollno: 2,
+    name: 'xyz',
+    class: 'SE'
+  }
+]
+test> db.MongoAss1.find({$and:[{rollno:2},{name:"abc"}]}).pretty();
+
+test> db.MongoAss1.find({$and:[{rollno:2},{name:"xyz"}]}).pretty();
+[
+  {
+    _id: ObjectId("637545374b6c7793efd81c07"),
+    rollno: 2,
+    name: 'xyz',
+    class: 'SE'
+  }
+]
+test> db.MongoAss1.find({rollno:{$eq;3}});
+Uncaught:
+SyntaxError: Unexpected token, expected "," (1:30)
+
+> 1 | db.MongoAss1.find({rollno:{$eq;3}});
+    |                               ^
+  2 |
+
+test> db.MongoAss1.find({rollno:{$eq:3}});
+[
+  {
+    _id: ObjectId("637545374b6c7793efd81c08"),
+    rollno: 3,
+    name: 'pqr',
+    class: 'TE'
+  }
+]
+test>

@@ -1,0 +1,102 @@
+mysql> create database Ass4;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> use Ass4;
+Database changed
+mysql> create table borrower(rollno int , name varchar(20), doi date, nob varchar(20), status varchar(5));
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> insert into borrower values(1, 'Atharva', '2022-06-04', 'You can win', 'I'),(2, 'Sid', '2022-06-05', 'Secrets', 'I'),(3, 'Yash', '2022-03-04', 'Satya Nadela', 'I');
+Query OK, 3 rows affected (0.01 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> desc borrower
+    -> ^C
+mysql> desc borrower;
++--------+-------------+------+-----+---------+-------+
+| Field  | Type        | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| rollno | int         | YES  |     | NULL    |       |
+| name   | varchar(20) | YES  |     | NULL    |       |
+| doi    | date        | YES  |     | NULL    |       |
+| nob    | varchar(20) | YES  |     | NULL    |       |
+| status | varchar(5)  | YES  |     | NULL    |       |
++--------+-------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+mysql> select * from borrower;
++--------+---------+------------+--------------+--------+
+| rollno | name    | doi        | nob          | status |
++--------+---------+------------+--------------+--------+
+|      1 | Atharva | 2022-06-04 | You can win  | I      |
+|      2 | Sid     | 2022-06-05 | Secrets      | I      |
+|      3 | Yash    | 2022-03-04 | Satya Nadela | I      |
++--------+---------+------------+--------------+--------+
+3 rows in set (0.00 sec)
+
+mysql> create table fine(rollno int primary key, dor date, amt int);
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> desc fine;
++--------+------+------+-----+---------+-------+
+| Field  | Type | Null | Key | Default | Extra |
++--------+------+------+-----+---------+-------+
+| rollno | int  | NO   | PRI | NULL    |       |
+| dor    | date | YES  |     | NULL    |       |
+| amt    | int  | YES  |     | NULL    |       |
++--------+------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> drop procedure if exists p_fine;
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+
+mysql> delimiter //
+mysql> create procedure p_fine(IN rno int, IN bname varchar(20))
+    -> begin
+    ->
+    -> declare d1 date;
+    -> declare dayCnt int;
+    -> declare fine_amt int;
+    ->
+    -> select doi into d1 from borrower where rollno=rno and nob=bname;
+    ->
+    -> select datediff(now(),d1) into dayCnt;
+    ->
+    -> if(dayCnt>15 and dayCnt<30) then set fine_amt=dayCnt*5;
+    -> insert into fine(rollno, dor, amt) value(rno, now(), fine_amt);
+    -> update borrower set status='R' where rollno=rno;
+    ->
+    -> elseif(daycnt>30) then set fine_amt=dayCnt*50;
+    -> insert into fine(rollno, dor, amt) value(rno, now(), fine_amt);
+    -> update borrower set status='R' where rollno=rno;
+    ->
+    -> else
+    -> update borrower set status='R' where rollno=rno;
+    -> end if;
+    -> end;
+    -> //
+Query OK, 0 rows affected (0.07 sec)
+
+mysql> delimiter ;
+mysql> call p_fine(2, 'Secrets');
+Query OK, 1 row affected (0.07 sec)
+
+mysql> select * fine;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'fine' at line 1
+mysql> select * from fine;
++--------+------------+------+
+| rollno | dor        | amt  |
++--------+------------+------+
+|      2 | 2022-11-17 | 8250 |
++--------+------------+------+
+1 row in set (0.00 sec)
+
+mysql> select * from borrower;
++--------+---------+------------+--------------+--------+
+| rollno | name    | doi        | nob          | status |
++--------+---------+------------+--------------+--------+
+|      1 | Atharva | 2022-06-04 | You can win  | I      |
+|      2 | Sid     | 2022-06-05 | Secrets      | R      |
+|      3 | Yash    | 2022-03-04 | Satya Nadela | I      |
++--------+---------+------------+--------------+--------+
+3 rows in set (0.00 sec)

@@ -1,0 +1,74 @@
+mysql> create database Ass6
+    -> ^C
+mysql> create database Ass6;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> use Ass6;
+Database changed
+mysql> create table student(rollno int, name varchar(20), marks int);
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> create table result(rollno int, name varchar(20), class varchar(20));
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> insert into student values(1, 'Atharva', 1200),(2,'Mandar',900),(3,'Sid',880),(4,'Yash',700);
+Query OK, 4 rows affected (0.01 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> select * from student;
++--------+---------+-------+
+| rollno | name    | marks |
++--------+---------+-------+
+|      1 | Atharva |  1200 |
+|      2 | Mandar  |   900 |
+|      3 | Sid     |   880 |
+|      4 | Yash    |   700 |
++--------+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> drop procedure if exists proc_grade;
+Query OK, 0 rows affected, 1 warning (0.01 sec)
+
+mysql> delimiter //
+mysql> create procedure proc_grade()
+    -> begin
+    -> declare done int default 0;
+    -> declare s_rno int;
+    -> declare s_marks int;
+    -> declare s_name varchar(20);
+    -> declare s_class varchar(20);
+    -> declare s_student cursor for select * from student;
+    -> declare continue handler for not found set done=1;
+    -> open s_student;
+    -> read_loop: LOOP
+    -> fetch s_student into s_rno, s_name, s_marks;
+    ->
+    -> if(done=1) then leave read_loop;
+    -> end if;
+    ->
+    -> if(s_marks<=1500 and s_marks>=990) then set s_class='Distinction';
+    -> elseif(s_marks<=989 and s_marks>=900) then set s_class='First Class';
+    -> elseif(s_marks<=899 and s_marks>=825) then set s_class='Higher Second Class';
+    -> else set s_class='Pass';
+    -> end if;
+    -> insert into result(rollno, name, class) value(s_rno, s_name, s_class);
+    -> end LOOP;
+    -> close s_student;
+    -> end;
+    -> //
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> delimiter ;
+mysql> call proc_grade();
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> select * from result;
++--------+---------+---------------------+
+| rollno | name    | class               |
++--------+---------+---------------------+
+|      1 | Atharva | Distinction         |
+|      2 | Mandar  | First Class         |
+|      3 | Sid     | Higher Second Class |
+|      4 | Yash    | Pass                |
++--------+---------+---------------------+
+4 rows in set (0.00 sec)
