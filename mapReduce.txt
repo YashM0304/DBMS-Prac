@@ -1,0 +1,44 @@
+> db.prb03.insert({cust_id:"A123",amount:500,status:"A"});
+WriteResult({ "nInserted" : 1 })
+> db.prb03.insert({cust_id:"A123",amount:250,status:"A"});
+WriteResult({ "nInserted" : 1 })
+> db.prb03.insert({cust_id:"B212",amount:200,status:"A"});
+WriteResult({ "nInserted" : 1 })
+> db.prb03.insert({cust_id:"A123",amount:300,status:"D"});
+WriteResult({ "nInserted" : 1 })
+> db.prb03.find().pretty()
+{
+    "_id" : ObjectId("6364c7bec55c66509951cc2d"),
+    "cust_id" : "A123",
+    "amount" : 500,
+    "status" : "A"
+}
+{
+    "_id" : ObjectId("6364c7c7c55c66509951cc2e"),
+    "cust_id" : "A123",
+    "amount" : 250,
+    "status" : "A"
+}
+{
+    "_id" : ObjectId("6364c7d9c55c66509951cc2f"),
+    "cust_id" : "B212",
+    "amount" : 200,
+    "status" : "A"
+}
+{
+  db.prb03.mapReduce(function(){ emit(this.cust_id,this.amount);}, function(key, values) {return Array.sum(values)}, {query : {status : "A"}, out:"order_totals"})
+{
+    "result" : "order_totals",
+    "timeMillis" : 348,
+    "counts" : {
+        "input" : 3,
+        "emit" : 3,
+        "reduce" : 1,
+        "output" : 2
+    },
+    "ok" : 1
+}
+> db.order_totals.find().pretty();
+{ "_id" : "A123", "value" : 750 }
+{ "_id" : "B212", "value" : 200 }
+>

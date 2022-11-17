@@ -1,0 +1,77 @@
+test> db.createCollection("Student");
+{ ok: 1 }
+test>
+db.Student.insert({Empid:1,Name:"Nishad",Dept:"HR",Salary:50000}
+);
+{
+acknowledged: true,
+insertedIds: { '0': ObjectId("636e30df8c003881cf35b760") }
+}
+test>
+db.Student.insert({Empid:2,Name:"Yash",Dept:"HR",Salary:60000});
+{
+acknowledged: true,
+insertedIds: { '0': ObjectId("636e30f58c003881cf35b761") }
+}
+test>
+db.Student.insert({Empid:3,Name:"Vedant",Dept:"Design",Salary:70
+000});
+{
+acknowledged: true,
+insertedIds: { '0': ObjectId("636e31288c003881cf35b763") }
+}
+test> db.Student.find().pretty();
+[
+{
+_id: ObjectId("636e30df8c003881cf35b760"),
+Empid: 1,
+Name: 'Nishad',
+Dept: 'HR',
+Salary: 50000
+},
+{
+_id: ObjectId("636e30f58c003881cf35b761"),
+Empid: 2,
+Name: 'Yash',
+Dept: 'HR',
+Salary: 60000
+},
+{
+_id: ObjectId("636e31978c003881cf35b764"),
+Empid: 3,
+Name: 'Vedant',
+Dept: 'Design',
+Salary: 70000
+}
+]
+test> db.Student.aggregate([{$group:{_id:"$Dept",Max_Salary:
+{$max:"$Salary"}}}]);
+[
+{ _id: 'HR', Max_Salary: 60000 },
+{ _id: 'Design', Max_Salary: 70000 }
+]
+test> db.Student.aggregate([{$group:{_id:"$Dept",Min_Salary:
+{$min:"$Salary"}}}]);
+[
+{ _id: 'HR', Min_Salary: 50000 },
+{ _id: 'Design', Min_Salary: 70000 }
+]
+test> db.Student.aggregate([{$group:{_id:"$Dept",Total_Salary:
+{$sum:"$Salary"}}}]);
+[
+{ _id: 'HR', Total_Salary: 110000 },
+{ _id: 'Design', Total_Salary: 70000 }
+]
+test> db.Student.aggregate([{$group:{_id:"$Dept",Average_Salary:
+{$avg:"$Salary"}}}]);
+[
+{ _id: 'Design', Average_Salary: 70000 },
+{ _id: 'HR', Average_Salary: 55000 }
+]
+test> db.Student.createIndex({Empid:1});
+Empid_1
+test> db.Student.getIndexes();
+[
+{ v: 2, key: { _id: 1 }, name: '_id_' },
+{ v: 2, key: { Empid: 1 }, name: 'Empid_1' }
+]

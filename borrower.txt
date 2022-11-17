@@ -1,0 +1,44 @@
+drop procedure if exists p_fine;
+
+    delimiter //
+
+    create procedure p_fine(IN rno int,IN  bname varchar(20))
+    begin
+
+       declare d1 date;    
+       declare daycnt int;
+        declare fine_amt int;
+
+        SELECT  Date_of_issue into d1 FROM BORROWER
+      WHERE Rollno = rno and Name_of_Book= bname;
+
+     select DATEDIFF(now(),d1) into daycnt;
+
+
+         if(daycnt >= 15 and daycnt <= 30) then
+             set fine_amt = daycnt * 5;
+
+
+             insert into FINE(Rollno, Date_of_Return,amt)
+             values (rno,now(),fine_amt);
+
+          update BORROWER set status = 'R' where Rollno = rno;
+ 
+        elseif(daycnt > 30) then
+             set fine_amt = daycnt * 50;
+
+             insert into FINE values (rno,now(),fine_amt);
+
+           update BORROWER set status = 'R' where Rollno = rno;
+     
+        else
+
+        update BORROWER set status = 'R' where Rollno = rno;
+
+
+     end if;
+
+         end;
+//
+
+delimiter ;
