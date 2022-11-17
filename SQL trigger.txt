@@ -1,0 +1,92 @@
+mysql> create database Ass8;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> use Ass8;
+Database changed
+mysql> create table lib_book(bid int, bname varchar(20), qty int);
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> insert into lib_book values(1, 'dbms', 10),(2, 'mp',30),(3,'se',45);
+Query OK, 3 rows affected (0.01 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> select * from lib_book;
++------+-------+------+
+| bid  | bname | qty  |
++------+-------+------+
+|    1 | dbms  |   10 |
+|    2 | mp    |   30 |
+|    3 | se    |   45 |
++------+-------+------+
+3 rows in set (0.00 sec)
+
+mysql> create table lib_audit(bid int, bname varchar(20), qty int);
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> drop trigger if exists makeAudit;
+Query OK, 0 rows affected, 1 warning (0.01 sec)
+
+mysql> delimiter //
+mysql> create trigger makeAudit after delete on lib_book for each row
+    -> begin
+    -> insert into lib_audit(bid, bname, qty) value(old.bid, old.bname, old.qty);
+    -> end;
+    -> //
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> delete from lib_book where bid=1;
+    -> ^C
+mysql> delimiter ;
+mysql> delete from lib_book where bid=1;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from lib_audit;
++------+-------+------+
+| bid  | bname | qty  |
++------+-------+------+
+|    1 | dbms  |   10 |
++------+-------+------+
+1 row in set (0.00 sec)
+
+mysql> select * from lib_book;
++------+-------+------+
+| bid  | bname | qty  |
++------+-------+------+
+|    2 | mp    |   30 |
+|    3 | se    |   45 |
++------+-------+------+
+2 rows in set (0.00 sec)
+
+mysql> drop trigger if exists makeAudit2;
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+
+mysql> delimiter //
+mysql> create trigger makeAudit2 after update on lib_book for each row
+    -> begin
+    -> insert into lib_audit(bid, bname, qty) value(old.bid, old.bname, old.qty);
+    -> end;
+    -> //
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> delimiter ;
+mysql> update lib_book set qty=60 where bid = 2;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from lib_audit;
++------+-------+------+
+| bid  | bname | qty  |
++------+-------+------+
+|    1 | dbms  |   10 |
+|    2 | mp    |   30 |
++------+-------+------+
+2 rows in set (0.00 sec)
+
+mysql> select * from lib_book;
++------+-------+------+
+| bid  | bname | qty  |
++------+-------+------+
+|    2 | mp    |   60 |
+|    3 | se    |   45 |
++------+-------+------+
+2 rows in set (0.00 sec)
