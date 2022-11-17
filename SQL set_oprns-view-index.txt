@@ -1,0 +1,161 @@
+
+mysql> create database Ass01;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> use Ass01;
+Database changed
+mysql> create table Customer(accNo int primary key, name varchar(20), balance int, city varchar(20));
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> insert into Customer value(1, 'Ram', 10000, 'Pune');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into Customer values(2, 'Ravi', 25000, 'Nasik'),(3, 'Sachin', 30000, 'Mumbai');
+Query OK, 2 rows affected (0.00 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql> select * from Customer;
++-------+--------+---------+--------+
+| accNo | name   | balance | city   |
++-------+--------+---------+--------+
+|     1 | Ram    |   10000 | Pune   |
+|     2 | Ravi   |   25000 | Nasik  |
+|     3 | Sachin |   30000 | Mumbai |
++-------+--------+---------+--------+
+3 rows in set (0.00 sec)
+
+mysql> create table Loan(loanNo int primary key, name varchar(20), loanAmt int);
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> insert into Loan values(1, 'Ram', 10000),(2,'Ravi',50000),(4,'Dipak',40000);
+Query OK, 3 rows affected (0.01 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> select * from Loan;
++--------+-------+---------+
+| loanNo | name  | loanAmt |
++--------+-------+---------+
+|      1 | Ram   |   10000 |
+|      2 | Ravi  |   50000 |
+|      4 | Dipak |   40000 |
++--------+-------+---------+
+3 rows in set (0.00 sec)
+
+
+mysql> select name from Customer union select name from Loan;
++--------+
+| name   |
++--------+
+| Ram    |
+| Ravi   |
+| Sachin |
+| Dipak  |
++--------+
+4 rows in set (0.00 sec)
+
+mysql> select name from Customer intersect select name from Loan;
++------+
+| name |
++------+
+| Ram  |
+| Ravi |
++------+
+2 rows in set (0.00 sec)
+
+mysql> select name from Customer where name not in(select name from Loan);
++--------+
+| name   |
++--------+
+| Sachin |
++--------+
+1 row in set (0.00 sec)
+
+mysql> create view highBalance as select * from Customer;
+Query OK, 0 rows affected (0.01 sec)
+
+
+mysql> select * from highBalance;
++-------+--------+---------+--------+
+| accNo | name   | balance | city   |
++-------+--------+---------+--------+
+|     1 | Ram    |   10000 | Pune   |
+|     2 | Ravi   |   25000 | Nasik  |
+|     3 | Sachin |   30000 | Mumbai |
++-------+--------+---------+--------+
+3 rows in set (0.00 sec)
+
+mysql> create view highBalance1 as select * from Customer where balance>20000;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> select * from highBalance1;
++-------+--------+---------+--------+
+| accNo | name   | balance | city   |
++-------+--------+---------+--------+
+|     2 | Ravi   |   25000 | Nasik  |
+|     3 | Sachin |   30000 | Mumbai |
++-------+--------+---------+--------+
+2 rows in set (0.00 sec)
+
+mysql> create view highBalanceCity as select * from Customer where balance>20000 and city='Nasik';
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> select * from highBalanceCity;
++-------+------+---------+-------+
+| accNo | name | balance | city  |
++-------+------+---------+-------+
+|     2 | Ravi |   25000 | Nasik |
++-------+------+---------+-------+
+1 row in set (0.00 sec)
+
+mysql> create index name_idx on Customer(name);
+Query OK, 0 rows affected (0.03 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+
+mysql> create index composite_idx on Customer(name,accNo);
+Query OK, 0 rows affected (0.03 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> show index from Customer;
++----------+------------+---------------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+---------+------------+
+| Table    | Non_unique | Key_name      | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type | Comment | Index_comment | Visible | Expression |
++----------+------------+---------------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+---------+------------+
+| customer |          0 | PRIMARY       |            1 | accNo       | A         |           3 |     NULL |   NULL |      | BTREE      |         |               | YES     | NULL       |
+| customer |          1 | name_idx      |            1 | name        | A         |           3 |     NULL |   NULL | YES  | BTREE      |         |               | YES     | NULL       |
+| customer |          1 | composite_idx |            1 | name        | A         |           3 |     NULL |   NULL | YES  | BTREE      |         |               | YES     | NULL       |
+| customer |          1 | composite_idx |            2 | accNo       | A         |           3 |     NULL |   NULL |      | BTREE      |         |               | YES     | NULL       |
++----------+------------+---------------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+---------+------------+
+4 rows in set (0.00 sec)
+
+
+mysql> select * from Customer order by balance asc;
++-------+--------+---------+--------+
+| accNo | name   | balance | city   |
++-------+--------+---------+--------+
+|     1 | Ram    |   10000 | Pune   |
+|     2 | Ravi   |   25000 | Nasik  |
+|     3 | Sachin |   30000 | Mumbai |
++-------+--------+---------+--------+
+3 rows in set (0.00 sec)
+
+mysql> select name,loanAmt from Loan order by loanAmt desc;
++-------+---------+
+| name  | loanAmt |
++-------+---------+
+| Ravi  |   50000 |
+| Dipak |   40000 |
+| Ram   |   10000 |
++-------+---------+
+3 rows in set (0.00 sec)
+
+mysql> select accNo, name, balance*0.04 as intrest from Customer;
++-------+--------+---------+
+| accNo | name   | intrest |
++-------+--------+---------+
+|     1 | Ram    |  400.00 |
+|     2 | Ravi   | 1000.00 |
+|     3 | Sachin | 1200.00 |
++-------+--------+---------+
+3 rows in set (0.00 sec)
+
+mysql>
